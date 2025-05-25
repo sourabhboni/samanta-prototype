@@ -1,0 +1,9 @@
+{
+  "appTitle": "Samanta - Asistente de RRHH con IA",
+  "welcomeMessage": "¡Bienvenido a Samanta!",
+  "currentRole": "Rol Actual",
+  "hr_manager": "Gerente de RRHH",
+  "employee": "Empleado",
+  "recruiter": "Reclutador",
+  "admin": "Administrador"
+}

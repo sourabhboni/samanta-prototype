@@ -1,0 +1,9 @@
+{
+  "appTitle": "Samanta - AI HR Assistant",
+  "welcomeMessage": "Welcome to Samanta!",
+  "currentRole": "Current Role",
+  "hr_manager": "HR Manager",
+  "employee": "Employee",
+  "recruiter": "Recruiter",
+  "admin": "Admin"
+}
