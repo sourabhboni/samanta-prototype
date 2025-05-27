@@ -5,36 +5,34 @@ import {
   Paper,
   TextField,
   Button,
-  Grid,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Box,
   Snackbar,
+  useTheme,
 } from '@mui/material';
-import MuiAlert from '@mui/material/Alert'; // For styled alerts in Snackbar
+import MuiAlert from '@mui/material/Alert';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useTranslation } from 'react-i18next';
-// import dayjs from 'dayjs'; // Only needed if you are doing complex dayjs operations here. DatePicker handles it.
 
-// Alert component for Snackbar
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 const RequestLeavePage = () => {
-  const { t } = useTranslation('common'); // Assuming 'common' namespace
+  const { t } = useTranslation('common');
+  const theme = useTheme();
 
   const [leaveType, setLeaveType] = useState('');
-  const [startDate, setStartDate] = useState(null); // Use null for DatePicker initial value
+  const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [reason, setReason] = useState('');
 
-  // Snackbar state
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success', 'error', 'warning', 'info'
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   const resetForm = () => {
     setLeaveType('');
@@ -45,8 +43,6 @@ const RequestLeavePage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    // Basic validation
     if (!leaveType || !startDate || !endDate) {
       setSnackbarMessage(
         t(
@@ -58,7 +54,6 @@ const RequestLeavePage = () => {
       setSnackbarOpen(true);
       return;
     }
-    // Ensure endDate is not before startDate. DatePicker value is a dayjs object if using AdapterDayjs.
     if (endDate && startDate && endDate.isBefore(startDate, 'day')) {
       setSnackbarMessage(
         t(
@@ -70,7 +65,6 @@ const RequestLeavePage = () => {
       setSnackbarOpen(true);
       return;
     }
-
     const formData = {
       leaveType,
       startDate: startDate ? startDate.format('YYYY-MM-DD') : null,
@@ -78,8 +72,6 @@ const RequestLeavePage = () => {
       reason,
     };
     console.log('Mock Leave Request Submission:', formData);
-
-    // Simulate API call
     setTimeout(() => {
       setSnackbarMessage(
         t(
@@ -90,7 +82,7 @@ const RequestLeavePage = () => {
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
       resetForm();
-    }, 1000); // 1-second delay
+    }, 1000);
   };
 
   const handleSnackbarClose = (event, reason) => {
@@ -101,88 +93,100 @@ const RequestLeavePage = () => {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 3, maxWidth: 700, margin: 'auto' }}>
-      {' '}
-      {/* Added maxWidth and margin for better form appearance */}
-      <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
+    <Paper
+      elevation={1}
+      sx={{
+        p: { xs: theme.spacing(2), sm: theme.spacing(3) },
+        // maxWidth: 600, // Removed maxWidth to allow it to be wider
+        margin: `${theme.spacing(2)} 0`, // Margin top/bottom, no horizontal auto margin
+      }}
+    >
+      <Typography
+        variant="h5"
+        component="h1"
+        gutterBottom
+        sx={{ mb: theme.spacing(3), textAlign: 'left' }}
+      >
+        {' '}
+        {/* textAlign: 'left' */}
         {t('nav.requestLeave')}
       </Typography>
-      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <FormControl fullWidth required>
-              <InputLabel id="leave-type-label">
-                {t('leave.type', 'Leave Type')}
-              </InputLabel>
-              <Select
-                labelId="leave-type-label"
-                id="leave-type-select"
-                value={leaveType}
-                label={t('leave.type', 'Leave Type')}
-                onChange={(e) => setLeaveType(e.target.value)}
-              >
-                <MenuItem value="">
-                  <em>{t('leave.selectType', 'Select type...')}</em>
-                </MenuItem>
-                <MenuItem value="annual">
-                  {t('leave.annual', 'Annual Leave')}
-                </MenuItem>
-                <MenuItem value="sick">
-                  {t('leave.sick', 'Sick Leave')}
-                </MenuItem>
-                <MenuItem value="unpaid">
-                  {t('leave.unpaid', 'Unpaid Leave')}
-                </MenuItem>
-                <MenuItem value="other">{t('leave.other', 'Other')}</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <DatePicker
-              label={t('leave.startDate', 'Start Date')}
-              value={startDate}
-              onChange={(newValue) => setStartDate(newValue)}
-              slotProps={{ textField: { fullWidth: true, required: true } }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <DatePicker
-              label={t('leave.endDate', 'End Date')}
-              value={endDate}
-              onChange={(newValue) => setEndDate(newValue)}
-              slotProps={{ textField: { fullWidth: true, required: true } }}
-              minDate={startDate} // Ensures end date is not before start date
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label={t('leave.reason', 'Reason (Optional)')}
-              multiline
-              rows={4}
-              fullWidth
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        noValidate
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: theme.spacing(3),
+        }}
+      >
+        <FormControl fullWidth required variant="outlined">
+          <InputLabel id="leave-type-label">
+            {t('leave.type', 'Leave Type')}
+          </InputLabel>
+          <Select
+            labelId="leave-type-label"
+            id="leave-type-select"
+            value={leaveType}
+            label={t('leave.type', 'Leave Type')}
+            onChange={(e) => setLeaveType(e.target.value)}
           >
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              size="large"
-            >
-              {t('leave.submitRequest', 'Submit Request')}
-            </Button>
-          </Grid>
-        </Grid>
+            <MenuItem value="">
+              <em>{t('leave.selectType', 'Select type...')}</em>
+            </MenuItem>
+            <MenuItem value="annual">
+              {t('leave.annual', 'Annual Leave')}
+            </MenuItem>
+            <MenuItem value="sick">{t('leave.sick', 'Sick Leave')}</MenuItem>
+            <MenuItem value="unpaid">
+              {t('leave.unpaid', 'Unpaid Leave')}
+            </MenuItem>
+            <MenuItem value="other">{t('leave.other', 'Other')}</MenuItem>
+          </Select>
+        </FormControl>
+
+        <DatePicker
+          label={t('leave.startDate', 'Start Date')}
+          value={startDate}
+          onChange={(newValue) => setStartDate(newValue)}
+          slotProps={{
+            textField: { fullWidth: true, required: true, variant: 'outlined' },
+          }}
+        />
+
+        <DatePicker
+          label={t('leave.endDate', 'End Date')}
+          value={endDate}
+          onChange={(newValue) => setEndDate(newValue)}
+          slotProps={{
+            textField: { fullWidth: true, required: true, variant: 'outlined' },
+          }}
+          minDate={startDate}
+        />
+
+        <TextField
+          label={t('leave.reason', 'Reason (Optional)')}
+          multiline
+          rows={4}
+          fullWidth
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          variant="outlined"
+        />
+
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="medium"
+          >
+            {t('leave.submitRequest', 'Submit Request')}
+          </Button>
+        </Box>
       </Box>
-      {/* Snackbar for notifications */}
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

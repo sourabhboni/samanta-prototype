@@ -9,67 +9,105 @@ import {
   ListItemText,
   Box,
   Typography,
+  useTheme,
 } from '@mui/material';
-import { Link as RouterLink, useLocation } from 'react-router-dom'; // Import useLocation
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useRole } from '../../contexts/RoleContext'; // Assuming this path is correct
-import { roleNavigations } from '../../config/navigation'; // Import our new nav config
-import { ROLES } from '../../config/roles'; // To get display name of current role if needed
-
-const drawerWidth = 240;
+import { useRole } from '../../contexts/RoleContext';
+import { roleNavigations } from '../../config/navigation';
+import { DRAWER_WIDTH } from '../../config/layoutConstants'; // Use shared constant
 
 const Sidebar = () => {
   const { t } = useTranslation('common');
-  const { currentRole, currentRoleName } = useRole(); // Get currentRole ID and name
-  const location = useLocation(); // To highlight the active link
+  const { currentRole, currentRoleName } = useRole();
+  const location = useLocation();
+  const theme = useTheme();
 
-  // ---- START DEBUG LOGS ----
-  console.log('Sidebar - Current Role ID:', currentRole);
-  console.log('Sidebar - roleNavigations object:', roleNavigations);
-  console.log(
-    'Sidebar - Attempting to access key in roleNavigations:',
-    roleNavigations[currentRole]
-  );
-  // ---- END DEBUG LOGS ----
   const navItems = roleNavigations[currentRole] || [];
 
   return (
     <Drawer
-      variant="permanent"
+      variant="permanent" // This makes it always visible
       sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+        width: DRAWER_WIDTH,
+        flexShrink: 0, // Ensures it doesn't shrink when content grows
+        [`& .MuiDrawer-paper`]: {
+          width: DRAWER_WIDTH,
+          boxSizing: 'border-box',
+          // Global MuiDrawer override in theme.js should handle backgroundColor and borderRight
+        },
       }}
     >
-      <Toolbar /> {/* This is to offset content below the AppBar */}
-      <Box sx={{ overflow: 'auto', padding: 2 }}>
+      {/* This Toolbar acts as a spacer to push content below the fixed AppBar */}
+      <Toolbar />
+      <Box
+        sx={{ overflow: 'auto', py: theme.spacing(2), px: theme.spacing(1) }}
+      >
         <Typography
           variant="h6"
           gutterBottom
-          sx={{ textAlign: 'center', marginBottom: 2 }}
+          sx={{
+            textAlign: 'center',
+            mb: theme.spacing(2.5),
+            px: theme.spacing(1),
+            color: theme.palette.text.primary,
+            fontWeight: theme.typography.h6.fontWeight,
+          }}
         >
           {currentRoleName || t('currentRole')}
         </Typography>
-        <List>
+        <List sx={{ p: 0 }}>
           {navItems.map((item) => {
-            const IconComponent = item.icon; // Step 1: Comment out icon logic for now
+            const IconComponent = item.icon;
+            const isSelected =
+              location.pathname === item.path ||
+              (item.path !== '/' &&
+                location.pathname.startsWith(item.path + '/'));
+
             return (
               <ListItemButton
                 component={RouterLink}
                 to={item.path}
                 key={item.path}
-                selected={location.pathname === item.path}
+                selected={isSelected}
+                sx={{
+                  py: theme.spacing(1),
+                  px: theme.spacing(2.5),
+                  mb: theme.spacing(0.5),
+                  borderRadius: theme.shape.borderRadius,
+                  mx: theme.spacing(1),
+                  '&.Mui-selected': {
+                    color: theme.palette.primary.main,
+                    // borderLeft: `4px solid ${theme.palette.primary.main}`, // Example if you want left border
+                    // borderRight: 'none', // Then remove right border from global theme for selected
+                    '.MuiListItemIcon-root': {
+                      color: theme.palette.primary.main,
+                    },
+                  },
+                }}
               >
                 {IconComponent && (
-                  <ListItemIcon>
-                    <IconComponent />
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 'auto',
+                      mr: theme.spacing(1.5),
+                      color: isSelected
+                        ? theme.palette.primary.main
+                        : theme.palette.text.secondary,
+                    }}
+                  >
+                    <IconComponent fontSize="small" />
                   </ListItemIcon>
                 )}
-
-                <ListItemText primary={t(item.labelKey)} />
-
-                {/* <-- Use a static string */}
+                <ListItemText
+                  primary={t(item.labelKey)}
+                  primaryTypographyProps={{
+                    variant: 'body2',
+                    fontWeight: isSelected
+                      ? theme.typography.fontWeightMedium
+                      : theme.typography.fontWeightRegular,
+                  }}
+                />
               </ListItemButton>
             );
           })}
