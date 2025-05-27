@@ -13,6 +13,20 @@ import { Typography } from '@mui/material'; // Example MUI component
 import DashboardPage from './pages/DashboardPage';
 import UserProfilePage from './pages/UserProfilePage';
 import NotFoundPage from './pages/NotFoundPage'; // Import NotFoundPage
+// Employee
+import RequestLeavePage from './pages/employee/RequestLeavePage';
+import ViewPayslipPage from './pages/employee/ViewPayslipPage';
+// HR
+import CheckPayrollPage from './pages/hr/CheckPayrollPage';
+import PostJobPage from './pages/hr/PostJobPage';
+import ApproveLeavePage from './pages/hr/ApproveLeavePage';
+// Recruiter
+import ScheduleInterviewPage from './pages/recruiter/ScheduleInterviewPage';
+import ReviewApplicationsPage from './pages/recruiter/ReviewApplicationsPage';
+// Admin
+import ManageAdminUsersPage from './pages/admin/ManageAdminUsersPage';
+import ExportLogsPage from './pages/admin/ExportLogsPage';
+import SystemAuditPage from './pages/admin/SystemAuditPage';
 
 // Placeholder for a HomePage - we'll move this to src/pages/ later
 const HomePagePlaceholder = () => {
@@ -82,6 +96,92 @@ function App() {
             element={
               <MainLayout>
                 <UserProfilePage />
+              </MainLayout>
+            }
+          />
+
+          {/* NEW Employee Routes */}
+          <Route
+            path="/employee/request-leave"
+            element={
+              <MainLayout>
+                <RequestLeavePage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/employee/view-payslip"
+            element={
+              <MainLayout>
+                <ViewPayslipPage />
+              </MainLayout>
+            }
+          />
+
+          {/* NEW HR Manager Routes */}
+          <Route
+            path="/hr/post-job"
+            element={
+              <MainLayout>
+                <PostJobPage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/hr/approve-leave"
+            element={
+              <MainLayout>
+                <ApproveLeavePage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/hr/check-payroll"
+            element={
+              <MainLayout>
+                <CheckPayrollPage />
+              </MainLayout>
+            }
+          />
+          {/* NEW Recruiter Routes */}
+          <Route
+            path="/recruiter/schedule-interview"
+            element={
+              <MainLayout>
+                <ScheduleInterviewPage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/recruiter/review-applications"
+            element={
+              <MainLayout>
+                <ReviewApplicationsPage />
+              </MainLayout>
+            }
+          />
+          {/* NEW Admin Routes */}
+          <Route
+            path="/admin/manage-users"
+            element={
+              <MainLayout>
+                <ManageAdminUsersPage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/admin/export-logs"
+            element={
+              <MainLayout>
+                <ExportLogsPage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/admin/system-audit"
+            element={
+              <MainLayout>
+                <SystemAuditPage />
               </MainLayout>
             }
           />
